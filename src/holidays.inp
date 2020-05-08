@@ -14,23 +14,25 @@ function bundle holidays (string country)
 	/* Return list of binary series each refering to some holiday.
 	return: bundle, Includes all series defined for teh country of choice. */
 
-	errorif(($datatype != 2), "Data set must be of type 'time-series'.")
 	bundle self = null
+	errorif(($datatype != 2), "Data set must be of type 'time-series'.")
 	string self.country = tolower(country)
-
-	# FIXME:
-	#eval instrings(countries_supported(), self.country) == 0
-	#errorif(instrings(countries_supported(), self.country) == 0,\
-	#		sprintf("Country '%s' not supported.", self.country))
+	errorif(!nelem(instrings(countries_supported(), self.country)),\
+			sprintf("Country '%s' not supported.", self.country))
 
 	get_date_series(&self)
 	get_holidays(&self)
+	drop_bundle_items(&self)
+
+	return self
+end function
+
+function void drop_bundle_items (bundle *self)
+	/* Drop some items before returning to user. */
 
 	delete self.month
 	delete self.year
 	delete self.day
-
-	return  self
 end function
 
 # Public
@@ -99,6 +101,7 @@ function void sundays_of_advent (bundle *self)
 	endloop
 end function
 
+
 function void days_with_fixed_date_de (bundle *self)
 	/* German holidays with a fixed date each year. */
 
@@ -108,7 +111,7 @@ function void days_with_fixed_date_de (bundle *self)
 	series self.weihnachtstag_2 = (self.month == 12 && self.day == 26) ? 1 : 0
 	series self.silvester = (self.month == 12 && self.day == 31) ? 1 : 0
 	series self.tag_der_deutschen_einheit = (self.month == 10 \
-		&& self.day == 31) ? 1 : 0
+		&& self.day == 3) ? 1 : 0
 end function
 
 
@@ -149,6 +152,7 @@ function void get_easter_sunday (bundle *self)
 			&& self.month == m && self.day == d) ? 1 : self.easter_sunday
 	endloop
 end function
+
 
 function void get_date_series (bundle *self)
 	/* Retrieve some date series. */
