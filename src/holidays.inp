@@ -1,0 +1,126 @@
+https://de.wikipedia.org/wiki/Gesetzliche_Feiertage_in_Deutschland#Bewegliche_Feiertage
+
+function bundle holidays (string country,
+						series y "some series",
+						const string which "'legal', 'all'")
+	/* code description
+	return: type, description */
+
+	# FIXME: is 'y' series needed or can $obsdate be retrieved wo?
+
+	errorif(($datatype != 2), "Data set must be of type 'time-series'.")
+
+	bundle self = null
+	string self.country = tolower(country)
+	string self.which = which
+	
+	# FIXME:
+	#eval instrings(countries_supported(), self.country) == 0
+	#errorif(instrings(countries_supported(), self.country) == 0,\
+	#		sprintf("Country '%s' not supported.", self.country))
+
+	get_date_series(&self)
+	get_holidays(&self)
+
+	return  self
+end function
+
+function void get_holidays (bundle *self)
+	/* Wrapper actually calling country-specific function. */
+
+	if self.country == "de"
+		self.holidays = holidays_de(&self)
+	endif
+end function
+
+
+function bundle holidays_de (bundle *self)
+	/* Holidays for Germany. */
+
+		if self.which == "legal"
+			holidays_de_legal(&self)
+		else
+
+		endif
+
+	return  variable
+end function
+
+function bundle holidays_de_legal (bundle *self)
+	/* Legal holidays are those which apply to all Bundesländer. */
+
+	# fixed dates
+	self.neujahr = defbundle(\
+		"day", 1, "month", 1)
+	self.erster_mai = defbundle(\
+		"day", 1, "month", 5)
+	self.weihnachtstag_1 = defbundle(\
+		"day", 25, "month", 12)
+	self.weihnachtstag_2 = defbundle(\
+		"day", 26, "month", 12)
+	self.tag_der_deutschen_einheit = defbundle(\
+		"day", 3, "month", 10)
+
+	days_related_to_eastern(&self)
+
+	return  variable
+end function
+
+
+function bundle days_related_to_eastern (bundle *self)
+	/* Days related to Easter Sunday in a fixed manner.*/
+
+	get_easter_sunday(&self)
+	series self.gruendonnerstag = self.easter_sunday(-3)
+	
+	series s1 = self.easter_sunday
+	series s2 = self.gruendonnerstag
+	print s1 s2 -o
+
+	#eval self.easter_sunday self.gruendonnerstag -o
+	stop
+	self.karfreitag = 
+	#self.ostermontag = 
+	#self.christihimmelfahrt = 
+
+	return  variable
+end function
+
+function void get_easter_sunday (bundle *self)
+	/* Retrieve series of easter sunday
+	return: type, description */
+
+	matrix years = values(self.year)
+	series self.easter_sunday = 0
+	loop i=1..rows(years)
+		# taken from help for easterday()
+		scalar e = easterday(years[i])
+		scalar m = floor(e)
+		scalar d = 100*(e-m)
+		self.easter_sunday = (self.year == years[i] && self.month == m \
+			&& self.day == d)
+	endloop
+end function
+
+function void get_date_series (bundle *self)
+	/* Retrieve some date series and additional date
+		related information. */
+
+	series self.obsdate = $obsdate
+	series y, m, d
+  	isoconv($obsdate, &y, &m, &d)
+
+  	series self.year = y
+  	series self.month = m
+  	series self.day = d
+end function
+
+
+
+function strings countries_supported (void)
+	/* List of countries supported. */
+
+	strings countries = defarray("de")
+
+	return  countries
+end function

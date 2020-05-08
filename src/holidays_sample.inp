@@ -1,0 +1,11 @@
+clear
+set verbose off
+nulldata 800
+
+setobs 7 2018-01-01 --time-series
+#print dataset -o
+
+include ./holidays.inp
+
+bundle HD = holidays("de", index, "legal")
+HD
