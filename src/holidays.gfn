@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gretl-functions>
+<gretl-function-package name="holidays" minver="2020a">
+<author email="atecon@posteo.de">Artur Tarassow</author>
+<version>0.1</version>
+<date>2020-05-08</date>
+<description>Retrieve list of holiday series</description>
+<tags>C81</tags>
+<help>
+Please ask questions and report bugs on the gretl mailing list if possible.
+If you want to add holidays, please fork the source code and send a pull request.
+
+Source code and test script(s) can be found here:
+https://github.com/atecon/holidays
+
+This package returns country specific holidays in an easy manner.
+Currently the package comprises holidays for Germany only. However, some events -- such
+as Christmas days -- are also valid for many other countries.
+
+The package comprises two public functions. First, the user calls the holiday()
+function for obtaining a bundle of various binary series named according to a specific
+holiday. Second, the get_list_of_holidays() function is a convenience function, and
+appends the list of series from the previusly returned bundle to the current data set.
+
+Note: The package only works if a time-series data set with periodicity 7 days is active.
+
+PUBLIC FUNCTIONS:
+-----------------------------------------------------------------------
+Function:	holidays()
+Arguments:	country_name (string, e.g. 'de')
+Output:         bundle
+
+Return:
+Bundle comprising a binary time-series for each holiday. The binary series takes the
+value of one if the specific hoilday occurs at a certain date, otherwise zero.
+-----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+Function:       get_list_of_holidays()
+Arguments:      B (bundle returned by hoildays() function)
+		S (some arbitrary series of the active data set)
+Output:         list
+
+Return:
+This convenience function appends all series of holidays in the bundle returned by the
+holidays() function to the active time-series data set.
+-----------------------------------------------------------------------
+
+
+Changelog:
+- v0.1, May 2020:
+	+ initial release
+</help>
+<gretl-function name="holidays" type="bundle">
+ <params count="1">
+  <param name="country" type="string"/>
+ </params>
+<code>/* Return list of binary series each refering to some holiday.
+return: bundle, Includes all series defined for teh country of choice. */
+bundle self = null
+errorif(($datatype != 2), &quot;Data set must be of type 'time-series'.&quot;)
+errorif(($pd != 7), &quot;Periodicity of the time-series data set must be 7 days.&quot;)
+string self.country = tolower(country)
+errorif(!nelem(instrings(countries_supported(), self.country)),    sprintf(&quot;Country '%s' not supported.&quot;, self.country))
+get_date_series(&amp;self)
+get_holidays(&amp;self)
+drop_bundle_items(&amp;self)
+return self
+</code>
+</gretl-function>
+<gretl-function name="get_list_of_holidays" type="list">
+ <params count="2">
+  <param name="self" type="bundle" const="true"/>
+  <param name="y" type="series" const="true">
+<description>arbitrary series needed</description>
+  </param>
+ </params>
+<code>/* Convenience function returning list of holiday series from
+bundle. Note: Series 'y' is needed such that series in L
+get appended to data set. */
+list L = null
+strings holiday_names = getkeys(self)
+loop foreach i holiday_names
+  if holiday_names[i] != &quot;country&quot;
+    list L += genseries(holiday_names[i], self.$i)
+  endif
+endloop
+return L
+</code>
+</gretl-function>
+<gretl-function name="countries_supported" type="strings" private="1">
+<code>/* List of countries supported. */
+strings countries = defarray(&quot;de&quot;)
+return  countries
+</code>
+</gretl-function>
+<gretl-function name="drop_bundle_items" type="void" private="1">
+ <params count="1">
+  <param name="self" type="bundleref"/>
+ </params>
+<code>/* Drop some items before returning to user. */
+delete self.month
+delete self.year
+delete self.day
+</code>
+</gretl-function>
+<gretl-function name="get_holidays" type="void" private="1">
+ <params count="1">
+  <param name="self" type="bundleref"/>
+ </params>
+<code>/* Wrapper actually calling country-specific function. */
+if self.country == &quot;de&quot;
+  get_holidays_de(&amp;self)
+endif
+</code>
+</gretl-function>
+<gretl-function name="get_holidays_de" type="void" private="1">
+ <params count="1">
+  <param name="self" type="bundleref"/>
+ </params>
+<code>/* Legal holidays are those which apply to all Bundesländer. */
+days_with_fixed_date_de(&amp;self)
+days_related_to_eastern_de(&amp;self)
+sundays_of_advent(&amp;self)
+</code>
+</gretl-function>
+<gretl-function name="sundays_of_advent" type="void" private="1">
+ <params count="1">
+  <param name="self" type="bundleref"/>
+ </params>
+<code>/* Determine the date for each of the four Sundays, and return list
+of Advent series. */
+matrix years = values(self.year)
+series self.advent_1 = 0
+series self.advent_2 = 0
+series self.advent_3 = 0
+series self.advent_4 = 0
+loop i=1..rows(years)
+  scalar shift_by_days = weekday(years[i], 12, 24)
+  if shift_by_days != 0			# not a Sunday
+    scalar weekday_sunday_before_2412 =   weekday(years[i], 12, (24 - shift_by_days))
+  endif
+  scalar advent_4 = isodate(epochday(years[i], 12, 24) - shift_by_days)
+  scalar advent_3 = isodate(epochday(advent_4) - 7)
+  scalar advent_2 = isodate(epochday(advent_3) - 7)
+  scalar advent_1 = isodate(epochday(advent_2) - 7)
+  self.advent_4 = ($obsdate == advent_4) ? 1 : self.advent_4
+  self.advent_3 = ($obsdate == advent_3) ? 1 : self.advent_3
+  self.advent_2 = ($obsdate == advent_2) ? 1 : self.advent_2
+  self.advent_1 = ($obsdate == advent_1) ? 1 : self.advent_1
+endloop
+</code>
+</gretl-function>
+<gretl-function name="days_with_fixed_date_de" type="void" private="1">
+ <params count="1">
+  <param name="self" type="bundleref"/>
+ </params>
+<code>/* German holidays with a fixed date each year. */
+series self.neujahr = (self.month == 1 &amp;&amp; self.day == 1) ? 1 : 0
+series self.erster_mai = (self.month == 5 &amp;&amp; self.day == 1) ? 1 : 0
+series self.weihnachtstag_1 = (self.month == 12 &amp;&amp; self.day == 25) ? 1 : 0
+series self.weihnachtstag_2 = (self.month == 12 &amp;&amp; self.day == 26) ? 1 : 0
+series self.silvester = (self.month == 12 &amp;&amp; self.day == 31) ? 1 : 0
+series self.tag_der_deutschen_einheit = (self.month == 10   &amp;&amp; self.day == 3) ? 1 : 0
+</code>
+</gretl-function>
+<gretl-function name="days_related_to_eastern_de" type="void" private="1">
+ <params count="1">
+  <param name="self" type="bundleref"/>
+ </params>
+<code>/* Days related to Easter Sunday in a fixed manner.*/
+get_easter_sunday(&amp;self)
+series self.gruendonnerstag = self.easter_sunday(+3)
+self.gruendonnerstag = misszero(self.gruendonnerstag)
+series self.karfreitag = self.easter_sunday(+2)
+self.karfreitag = misszero(self.karfreitag)
+series self.ostermontag = self.easter_sunday(-1)
+self.ostermontag = misszero(self.ostermontag)
+series self.christihimmelfahrt = self.easter_sunday(-39)
+self.christihimmelfahrt = misszero(self.christihimmelfahrt)
+series self.pfingstsonntag = self.easter_sunday(-49)
+self.pfingstsonntag = misszero(self.pfingstsonntag)
+series self.pfingstmontag = self.easter_sunday(-50)
+self.pfingstmontag = misszero(self.pfingstmontag)
+series self.fronleichnam = self.easter_sunday(-60)
+self.fronleichnam = misszero(self.fronleichnam)
+</code>
+</gretl-function>
+<gretl-function name="get_easter_sunday" type="void" private="1">
+ <params count="1">
+  <param name="self" type="bundleref"/>
+ </params>
+<code>/* Retrieve series of Easter Sundays
+return: type, description */
+matrix years = values(self.year)
+series self.easter_sunday = 0
+loop i=1..rows(years)
+  scalar e = easterday(years[i])
+  scalar m = floor(e)
+  scalar d = round(100*(e-m))
+  self.easter_sunday = (self.year == years[i]    &amp;&amp; self.month == m &amp;&amp; self.day == d) ? 1 : self.easter_sunday
+endloop
+</code>
+</gretl-function>
+<gretl-function name="get_date_series" type="void" private="1">
+ <params count="1">
+  <param name="self" type="bundleref"/>
+ </params>
+<code>/* Retrieve some date series. */
+series y, m, d
+isoconv($obsdate, &amp;y, &amp;m, &amp;d)
+series self.year = y
+series self.month = m
+series self.day = d
+</code>
+</gretl-function>
+<sample-script>
+clear
+set verbose off
+
+# Define some daily time-series data set
+nulldata 800
+setobs 7 2018-01-01 --time-series
+
+include holidays.gfn
+
+# Obtain holidays for Germany
+bundle HD = holidays(&quot;de&quot;)
+print HD
+list L = get_list_of_holidays(HD, index)
+L
+summary L --simple
+print L -o --range=1:10
+</sample-script>
+</gretl-function-package>
+</gretl-functions>

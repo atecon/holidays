@@ -1,0 +1,43 @@
+Please ask questions and report bugs on the gretl mailing list if possible.
+If you want to add holidays, please fork the source code and send a pull request.
+
+Source code and test script(s) can be found here:
+https://github.com/atecon/holidays
+
+This package returns country specific holidays in an easy manner.
+Currently the package comprises holidays for Germany only. However, some events -- such
+as Christmas days -- are also valid for many other countries.
+
+The package comprises two public functions. First, the user calls the holiday()
+function for obtaining a bundle of various binary series named according to a specific
+holiday. Second, the get_list_of_holidays() function is a convenience function, and
+appends the list of series from the previusly returned bundle to the current data set.
+
+Note: The package only works if a time-series data set with periodicity 7 days is active.
+
+PUBLIC FUNCTIONS:
+-----------------------------------------------------------------------
+Function:	holidays()
+Arguments:	country_name (string, e.g. 'de')
+Output:         bundle
+
+Return:
+Bundle comprising a binary time-series for each holiday. The binary series takes the
+value of one if the specific hoilday occurs at a certain date, otherwise zero.
+-----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+Function:       get_list_of_holidays()
+Arguments:      B (bundle returned by hoildays() function)
+		S (some arbitrary series of the active data set)
+Output:         list
+
+Return:
+This convenience function appends all series of holidays in the bundle returned by the
+holidays() function to the active time-series data set.
+-----------------------------------------------------------------------
+
+
+Changelog:
+- v0.1, May 2020:
+	+ initial release

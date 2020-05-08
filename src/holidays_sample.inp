@@ -1,12 +1,17 @@
 clear
 set verbose off
+
+# Define some daily time-series data set
 nulldata 800
 setobs 7 2018-01-01 --time-series
 
-include "./holidays.inp"
+include holidays.gfn
 
+# Obtain holidays for Germany
 bundle HD = holidays("de")
 print HD
 list L = get_list_of_holidays(HD, index)
+L
 summary L --simple
+print L -o --range=1:10
 

@@ -16,9 +16,11 @@ function bundle holidays (string country)
 
 	bundle self = null
 	errorif(($datatype != 2), "Data set must be of type 'time-series'.")
+	errorif(($pd != 7), "Periodicity of the time-series data set must be 7 days.")
 	string self.country = tolower(country)
 	errorif(!nelem(instrings(countries_supported(), self.country)),\
 			sprintf("Country '%s' not supported.", self.country))
+
 
 	get_date_series(&self)
 	get_holidays(&self)
