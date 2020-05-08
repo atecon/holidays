@@ -1,11 +1,12 @@
 clear
 set verbose off
 nulldata 800
-
 setobs 7 2018-01-01 --time-series
-#print dataset -o
 
-include ./holidays.inp
+include "./holidays.inp"
 
-bundle HD = holidays("de", index, "legal")
-HD
+bundle HD = holidays("de")
+print HD
+list L = get_list_of_holidays(HD, index)
+summary L --simple
+

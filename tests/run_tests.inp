@@ -1,0 +1,27 @@
+set verbose off
+clear
+
+include "./src/holidays.inp" --force
+include assertion.gfn
+
+nulldata 900
+setobs 7 2018-01-01 --time-series
+
+/*
+bundle HD = holidays("de")
+print HD
+list L = get_list_of_holidays(HD, index)
+summary L --simple
+*/
+
+
+function void test_countries_supported (void)
+    print "Start countries_supported()"
+
+    strings countries = countries_supported()
+    assert_equal_num(nelem(countries), 1)
+    assert_equal_str(countries[1], "de")
+end function
+test_countries_supported()
+
+printf "\nTests succesfully finished.\n"
