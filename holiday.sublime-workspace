@@ -4,12 +4,44 @@
 		"selected_items":
 		[
 			[
-				"eas",
-				"easter_sunday\tabc"
+				"st",
+				"strings\tabc"
+			],
+			[
+				"val",
+				"valentinstag\tabc"
+			],
+			[
+				"all",
+				"allerheiligen\tabc"
+			],
+			[
+				"holi",
+				"holiday_names\tabc"
+			],
+			[
+				"inclde",
+				"Includes"
 			],
 			[
 				"get",
-				"get_easter_sunday\tabc"
+				"get_names_of_holidays\t(holidays.inp)"
+			],
+			[
+				"hoi",
+				"holiday\t(holidays.inp)"
+			],
+			[
+				"ho",
+				"holiday_names\tabc"
+			],
+			[
+				"str",
+				"strdrop\tabc"
+			],
+			[
+				"eas",
+				"easter_sunday\tabc"
 			],
 			[
 				"ye",
@@ -22,10 +54,6 @@
 			[
 				"end",
 				"endif\tabc"
-			],
-			[
-				"ho",
-				"holidays_de\tabc"
 			],
 			[
 				"self",
@@ -75,24 +103,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "src/holidays_sample.inp",
-			"settings":
-			{
-				"buffer_size": 193,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/holidays.inp",
-			"settings":
-			{
-				"buffer_size": 5022,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -187,10 +197,17 @@
 	},
 	"expanded_folders":
 	[
-		"/home/at/git/holidays"
+		"/home/at/git/holidays",
+		"/home/at/git/holidays/src",
+		"/home/at/git/holidays/tests"
 	],
 	"file_history":
 	[
+		"/home/at/git/holidays/tests/run_tests.inp",
+		"/home/at/git/holidays/src/holidays_sample.inp",
+		"/home/at/git/holidays/src/holidays.spec",
+		"/home/at/git/holidays/src/holidays.inp",
+		"/home/at/git/holidays/src/holidays_help.txt",
 		"/home/at/git/holidays/src/txt",
 		"/home/at/git/holiday/src/holidays.inp",
 		"/home/at/git/holiday/src/holiday.inp",
@@ -219,7 +236,7 @@
 	],
 	"find":
 	{
-		"height": 28.0
+		"height": 39.0
 	},
 	"find_in_files":
 	{
@@ -233,6 +250,16 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"get_list_of_holidays",
+			"ypur",
+			"hoildays",
+			"2018",
+			"allerheiligen",
+			"reformationstag",
+			"erster_mai",
+			"fix",
+			"aschermittwoch",
+			"2018"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -240,6 +267,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"holidays"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -250,244 +278,6 @@
 	"groups":
 	[
 		{
-			"selected": 1,
-			"sheets":
-			[
-				{
-					"buffer": 0,
-					"file": "src/holidays_sample.inp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 193,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"SL.33.region_keys":
-							[
-							],
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content"
-							],
-							"syntax": "Packages/User/hansl.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/holidays.inp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5022,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								603,
-								603
-							]
-						],
-						"settings":
-						{
-							"SL.101.region_keys":
-							[
-							],
-							"SL.15.region_keys":
-							[
-							],
-							"SL.47.region_keys":
-							[
-							],
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-									"1":
-									[
-										602,
-										603
-									]
-								},
-								"icon":
-								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/round_bracket.png",
-										"region.yellowish"
-									]
-								},
-								"open":
-								{
-									"1":
-									[
-										532,
-										533
-									]
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content"
-							],
-							"syntax": "Packages/User/hansl.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 174.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
-			]
-		},
-		{
 			"sheets":
 			[
 			]
@@ -495,7 +285,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 28.0
+		"height": 24.0
 	},
 	"input":
 	{
@@ -510,18 +300,11 @@
 				0,
 				1,
 				1
-			],
-			[
-				1,
-				0,
-				2,
-				1
 			]
 		],
 		"cols":
 		[
 			0.0,
-			0.6,
 			1.0
 		],
 		"rows":
@@ -547,7 +330,7 @@
 	"project": "holiday.sublime-project",
 	"replace":
 	{
-		"height": 52.0
+		"height": 69.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -585,7 +368,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 92.0,
+	"side_bar_width": 311.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

@@ -14,20 +14,16 @@ Source code and test script(s) can be found here:
 https://github.com/atecon/holidays
 
 This package returns country specific holidays in an easy manner.
-Currently the package comprises holidays for Germany only. However, some events -- such
-as Christmas days -- are also valid for many other countries.
+Currently the package comprises holidays for Germany only. However, some events -- such as Christmas days -- are also valid for many other countries.
 
-The package comprises two public functions. First, the user calls the holiday()
-function for obtaining a bundle of various binary series named according to a specific
-holiday. Second, the get_list_of_holidays() function is a convenience function, and
-appends the list of series from the previusly returned bundle to the current data set.
+The package comprises four public functions. First, the user calls the holiday() function for obtaining a bundle of various binary series named according to a specific holiday. Second, the get_list_of_holidays() function is a convenience function, and appends the list of series from the previously returned bundle to the current data set. Third, the print_names_of_holidays() function simply prints all holidays in the compiled bundle. Fourth, the get_names_of_holidays() function returns a string array including the names of holidays compiled.
 
 Note: The package only works if a time-series data set with periodicity 7 days is active.
 
 PUBLIC FUNCTIONS:
 -----------------------------------------------------------------------
-Function:	holidays()
-Arguments:	country_name (string, e.g. 'de')
+Function:		holidays()
+Arguments:		country_name (string, e.g. 'de')
 Output:         bundle
 
 Return:
@@ -37,20 +33,58 @@ value of one if the specific hoilday occurs at a certain date, otherwise zero.
 
 -----------------------------------------------------------------------
 Function:       get_list_of_holidays()
-Arguments:      B (bundle returned by hoildays() function)
-		S (some arbitrary series of the active data set)
+Arguments:      B (bundle returned by holidays() function)
+				S (some arbitrary series of the active data set)
+				hd (string array of holiday series to return, optional)
 Output:         list
 
 Return:
-This convenience function appends all series of holidays in the bundle returned by the
-holidays() function to the active time-series data set.
+This convenience function appends all series of holidays in the bundle returned by the holidays() function to the active time-series data set.
+If one wants to retrieve only specific holidays, these can be
+defined by the optional string array 'hd'.
 -----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+Function:       get_names_of_holidays()
+Arguments:      B (bundle returned by holidays() function)
+Output:         string array
+
+Return:
+This convenience function returns a string array holding all
+names of holidays compiled after having called holidays() function.
+-----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+Function:       print_names_of_holidays()
+Arguments:      B (bundle returned by holidays() function)
+Output:         none
+
+Return:
+This convenience function print the unique names of holidays compiled
+after having called holidays() function.
+-----------------------------------------------------------------------
+
+
+================
+Adding holidays
+================
+These are the steps to consider in case you want to add holidays for a
+new country:
+
+1) Add a two-letter country flag to the 'countries' array in function countries_supported().
+2) Add the corresponding case to the get_holidays() function.
+3) Copy the days_with_fixed_date_de() function, name your new function days_with_fixed_date_&lt;COUNTRYFLAG&gt;() and define your set of holidays accordingly.
+4) Copy the days_related_to_eastern_de function, name your new function ddays_related_to_eastern_&lt;COUNTRYFLAG&gt;() and define your set of holidays accordingly.
+
+
 
 
 Changelog:
 - v0.1, May 2020:
 	+ initial release
 </help>
+<depends count="1">
+string_utils </depends>
 <gretl-function name="holidays" type="bundle">
  <params count="1">
   <param name="country" type="string"/>
@@ -69,39 +103,60 @@ return self
 </code>
 </gretl-function>
 <gretl-function name="get_list_of_holidays" type="list">
- <params count="2">
+ <params count="3">
   <param name="self" type="bundle" const="true"/>
   <param name="y" type="series" const="true">
-<description>arbitrary series needed</description>
+<description>Arbitrary series needed</description>
+  </param>
+  <param name="holiday_names" type="strings" optional="true" const="true">
+<description>Holidays to retrieve</description>
   </param>
  </params>
 <code>/* Convenience function returning list of holiday series from
 bundle. Note: Series 'y' is needed such that series in L
 get appended to data set. */
 list L = null
-strings holiday_names = getkeys(self)
+if !exists(holiday_names)
+  strings holiday_names = get_names_of_holidays(self)
+endif
 loop foreach i holiday_names
   if holiday_names[i] != &quot;country&quot;
-    list L += genseries(holiday_names[i], self.$i)
+    catch list L += genseries(holiday_names[i], self.$i)
+    if $error
+      printf &quot;\nError: Requested holiday '%s' not part of bundle.  				Ignored.&quot;, holiday_names[i]
+    endif
   endif
 endloop
 return L
+</code>
+</gretl-function>
+<gretl-function name="get_names_of_holidays" type="strings">
+ <params count="1">
+  <param name="self" type="bundle" const="true"/>
+ </params>
+<code>/* Convenience function returning a string array of names of holidays
+computed after having called the holiday() function. */
+strings holiday_names = strdrop(getkeys(self), &quot;country&quot;)
+return holiday_names
+</code>
+</gretl-function>
+<gretl-function name="print_names_of_holidays" type="void">
+ <params count="1">
+  <param name="self" type="bundle" const="true"/>
+ </params>
+<code>/* Convenience function printing names of holidays
+computed after having called the holiday() function. */
+strings holiday_names = get_names_of_holidays(self)
+printf &quot;\nNames of holidays included in the bundle:\n&quot;
+loop foreach i holiday_names -q
+  printf &quot;%s\n&quot;, holiday_names[i]
+endloop
 </code>
 </gretl-function>
 <gretl-function name="countries_supported" type="strings" private="1">
 <code>/* List of countries supported. */
 strings countries = defarray(&quot;de&quot;)
 return  countries
-</code>
-</gretl-function>
-<gretl-function name="drop_bundle_items" type="void" private="1">
- <params count="1">
-  <param name="self" type="bundleref"/>
- </params>
-<code>/* Drop some items before returning to user. */
-delete self.month
-delete self.year
-delete self.day
 </code>
 </gretl-function>
 <gretl-function name="get_holidays" type="void" private="1">
@@ -112,6 +167,16 @@ delete self.day
 if self.country == &quot;de&quot;
   get_holidays_de(&amp;self)
 endif
+</code>
+</gretl-function>
+<gretl-function name="drop_bundle_items" type="void" private="1">
+ <params count="1">
+  <param name="self" type="bundleref"/>
+ </params>
+<code>/* Drop some items before returning to user. */
+delete self.month
+delete self.year
+delete self.day
 </code>
 </gretl-function>
 <gretl-function name="get_holidays_de" type="void" private="1">
@@ -162,6 +227,12 @@ series self.weihnachtstag_1 = (self.month == 12 &amp;&amp; self.day == 25) ? 1 :
 series self.weihnachtstag_2 = (self.month == 12 &amp;&amp; self.day == 26) ? 1 : 0
 series self.silvester = (self.month == 12 &amp;&amp; self.day == 31) ? 1 : 0
 series self.tag_der_deutschen_einheit = (self.month == 10   &amp;&amp; self.day == 3) ? 1 : 0
+series self.frauentag = (self.month == 3 &amp;&amp; self.day == 8) ? 1 : 0
+series self.kindertag = (self.month == 6 &amp;&amp; self.day == 1) ? 1 : 0
+series self.reformationstag = (self.month == 10 &amp;&amp; self.day == 31) ? 1 : 0
+series self.allerheiligen = (self.month == 11 &amp;&amp; self.day == 1) ? 1 : 0
+series self.nikolaus = (self.month == 12 &amp;&amp; self.day == 6) ? 1 : 0
+series self.valentinstag = (self.month == 2 &amp;&amp; self.day == 14) ? 1 : 0
 </code>
 </gretl-function>
 <gretl-function name="days_related_to_eastern_de" type="void" private="1">
@@ -170,6 +241,12 @@ series self.tag_der_deutschen_einheit = (self.month == 10   &amp;&amp; self.day 
  </params>
 <code>/* Days related to Easter Sunday in a fixed manner.*/
 get_easter_sunday(&amp;self)
+series self.weiberfastnacht = self.easter_sunday(+52)
+self.weiberfastnacht = misszero(self.weiberfastnacht)
+series self.rosenmontag = self.easter_sunday(+48)
+self.rosenmontag = misszero(self.rosenmontag)
+series self.aschermittwoch = self.easter_sunday(+46)
+self.aschermittwoch = misszero(self.aschermittwoch)
 series self.gruendonnerstag = self.easter_sunday(+3)
 self.gruendonnerstag = misszero(self.gruendonnerstag)
 series self.karfreitag = self.easter_sunday(+2)
@@ -224,13 +301,24 @@ setobs 7 2018-01-01 --time-series
 
 include holidays.gfn
 
+
 # Obtain holidays for Germany
 bundle HD = holidays(&quot;de&quot;)
 print HD
+
+# Retrieve holidays as list of binary series
 list L = get_list_of_holidays(HD, index)
 L
 summary L --simple
 print L -o --range=1:10
+
+# Return names of holidays as string array
+strings holiday_names = get_names_of_holidays(HD)
+eval holiday_names[1]
+eval holiday_names[6]
+
+# Print names of holidays in bundle HD
+print_names_of_holidays(HD)
 </sample-script>
 </gretl-function-package>
 </gretl-functions>

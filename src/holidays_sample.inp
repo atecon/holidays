@@ -7,11 +7,23 @@ setobs 7 2018-01-01 --time-series
 
 include holidays.gfn
 
+
 # Obtain holidays for Germany
 bundle HD = holidays("de")
 print HD
+
+# Retrieve holidays as list of binary series
 list L = get_list_of_holidays(HD, index)
 L
 summary L --simple
 print L -o --range=1:10
+
+# Return names of holidays as string array
+strings holiday_names = get_names_of_holidays(HD)
+eval holiday_names[1]
+eval holiday_names[6]
+
+# Print names of holidays in bundle HD
+print_names_of_holidays(HD)
+
 

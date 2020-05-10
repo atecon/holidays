@@ -8,6 +8,14 @@ function strings countries_supported (void)
 	return  countries
 end function
 
+function void get_holidays (bundle *self)
+	/* Wrapper actually calling country-specific function. */
+
+	if self.country == "de"
+		get_holidays_de(&self)
+	endif
+end function
+
 
 # Public
 function bundle holidays (string country)
@@ -20,7 +28,6 @@ function bundle holidays (string country)
 	string self.country = tolower(country)
 	errorif(!nelem(instrings(countries_supported(), self.country)),\
 			sprintf("Country '%s' not supported.", self.country))
-
 
 	get_date_series(&self)
 	get_holidays(&self)
@@ -39,30 +46,49 @@ end function
 
 # Public
 function list get_list_of_holidays (const bundle self,
-								const series y "arbitrary series needed")
+								const series y "Arbitrary series needed",
+								const strings holiday_names[null] "Holidays to retrieve")
 	/* Convenience function returning list of holiday series from
 		bundle. Note: Series 'y' is needed such that series in L
 		get appended to data set. */
 
 	list L = null
-	strings holiday_names = getkeys(self)
+	if !exists(holiday_names)
+		strings holiday_names = get_names_of_holidays(self)
+	endif
 
 	loop foreach i holiday_names
 		if holiday_names[i] != "country"
-			list L += genseries(holiday_names[i], self.$i)
+			catch list L += genseries(holiday_names[i], self.$i)
+			if $error
+				printf "\nError: Requested holiday '%s' not part of bundle. \
+				Ignored.", holiday_names[i]
+			endif
 		endif
 	endloop
 
 	return L
 end function
 
+# Public
+function strings get_names_of_holidays (const bundle self)
+	/* Convenience function returning a string array of names of holidays
+		computed after having called the holiday() function. */
 
-function void get_holidays (bundle *self)
-	/* Wrapper actually calling country-specific function. */
+	strings holiday_names = strdrop(getkeys(self), "country")
+	return holiday_names
+end function
 
-	if self.country == "de"
-		get_holidays_de(&self)
-	endif
+# Public
+function void print_names_of_holidays (const bundle self)
+	/* Convenience function printing names of holidays
+		computed after having called the holiday() function. */
+
+	strings holiday_names = get_names_of_holidays(self)
+	printf "\nNames of holidays included in the bundle:\n"
+	loop foreach i holiday_names -q
+		printf "%s\n", holiday_names[i]
+	endloop
 end function
 
 
@@ -114,6 +140,12 @@ function void days_with_fixed_date_de (bundle *self)
 	series self.silvester = (self.month == 12 && self.day == 31) ? 1 : 0
 	series self.tag_der_deutschen_einheit = (self.month == 10 \
 		&& self.day == 3) ? 1 : 0
+	series self.frauentag = (self.month == 3 && self.day == 8) ? 1 : 0
+	series self.kindertag = (self.month == 6 && self.day == 1) ? 1 : 0
+	series self.reformationstag = (self.month == 10 && self.day == 31) ? 1 : 0
+	series self.allerheiligen = (self.month == 11 && self.day == 1) ? 1 : 0
+	series self.nikolaus = (self.month == 12 && self.day == 6) ? 1 : 0
+	series self.valentinstag = (self.month == 2 && self.day == 14) ? 1 : 0
 end function
 
 
@@ -121,6 +153,12 @@ function void days_related_to_eastern_de (bundle *self)
 	/* Days related to Easter Sunday in a fixed manner.*/
 
 	get_easter_sunday(&self)
+	series self.weiberfastnacht = self.easter_sunday(+52)
+	self.weiberfastnacht = misszero(self.weiberfastnacht)
+	series self.rosenmontag = self.easter_sunday(+48)
+	self.rosenmontag = misszero(self.rosenmontag)
+	series self.aschermittwoch = self.easter_sunday(+46)
+	self.aschermittwoch = misszero(self.aschermittwoch)
 	series self.gruendonnerstag = self.easter_sunday(+3)
 	self.gruendonnerstag = misszero(self.gruendonnerstag)
 	series self.karfreitag = self.easter_sunday(+2)
