@@ -1,15 +1,27 @@
-Please ask questions and report bugs on the gretl mailing list if possible.
-If you want to add holidays, please fork the source code and send a pull request.
 
+This package returns country specific holidays in an easy manner.
+Currently the package comprises holidays for Germany only. However, some
+events -- such as Christmas days -- are also valid for many other
+countries.
+
+Please ask questions and report bugs on the gretl mailing list if
+possible. Alternatively, open an issue ticket on my github repo.
 Source code and test script(s) can be found here:
 https://github.com/atecon/holidays
 
-This package returns country specific holidays in an easy manner.
-Currently the package comprises holidays for Germany only. However, some events -- such as Christmas days -- are also valid for many other countries.
+The package comprises four public functions. First, the user calls the holiday() function for obtaining a bundle of various binary series named according to a specific holiday.
+Second, the get_list_of_holidays() function is a convenience function,
+and appends the list of series from the previously returned bundle to the current data set.
+Third, the print_names_of_holidays() function simply prints all holidays
+in the compiled bundle.
+Fourth, the get_names_of_holidays() function returns a string array
+including the names of holidays compiled.
 
-The package comprises four public functions. First, the user calls the holiday() function for obtaining a bundle of various binary series named according to a specific holiday. Second, the get_list_of_holidays() function is a convenience function, and appends the list of series from the previously returned bundle to the current data set. Third, the print_names_of_holidays() function simply prints all holidays in the compiled bundle. Fourth, the get_names_of_holidays() function returns a string array including the names of holidays compiled.
+Note: The package only works if a time-series data set with periodicity 7
+days is active. Thus, if you actually want to make use of holidays series
+for a panel data set, you need to join these to your panel data set by
+means of gretl's "join" command.
 
-Note: The package only works if a time-series data set with periodicity 7 days is active.
 
 PUBLIC FUNCTIONS:
 -----------------------------------------------------------------------
@@ -59,14 +71,20 @@ after having called holidays() function.
 ================
 Adding holidays
 ================
+Currently the package provides holidays only for Germany. If you would
+like to add holiday information for other countries that would be great.
 These are the steps to consider in case you want to add holidays for a
 new country:
 
-1) Add a two-letter country flag to the 'countries' array in function countries_supported().
+1) Add a two-letter country flag to the 'countries' string array in
+function countries_supported().
 2) Add the corresponding case to the get_holidays() function.
 3) Copy the days_with_fixed_date_de() function, name your new function days_with_fixed_date_<COUNTRYFLAG>() and define your set of holidays accordingly.
 4) Copy the days_related_to_eastern_de function, name your new function ddays_related_to_eastern_<COUNTRYFLAG>() and define your set of holidays accordingly.
 
+I recommand you to fork the source code from the github repo (see the URL at the top) and to send a pull request with your code. However, if you are
+not familiar with the versioning too git, you may contact me via email:
+<atecon@posteo.de>
 
 
 

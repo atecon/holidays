@@ -152,45 +152,47 @@ end function
 function void days_related_to_eastern_de (bundle *self)
 	/* Days related to Easter Sunday in a fixed manner.*/
 
-	get_easter_sunday(&self)
-	series self.weiberfastnacht = self.easter_sunday(+52)
+	series self.ostersonntag = get_easter_sunday(self)
+	series self.weiberfastnacht = self.ostersonntag(+52)
 	self.weiberfastnacht = misszero(self.weiberfastnacht)
-	series self.rosenmontag = self.easter_sunday(+48)
+	series self.rosenmontag = self.ostersonntag(+48)
 	self.rosenmontag = misszero(self.rosenmontag)
-	series self.aschermittwoch = self.easter_sunday(+46)
+	series self.aschermittwoch = self.ostersonntag(+46)
 	self.aschermittwoch = misszero(self.aschermittwoch)
-	series self.gruendonnerstag = self.easter_sunday(+3)
+	series self.gruendonnerstag = self.ostersonntag(+3)
 	self.gruendonnerstag = misszero(self.gruendonnerstag)
-	series self.karfreitag = self.easter_sunday(+2)
+	series self.karfreitag = self.ostersonntag(+2)
 	self.karfreitag = misszero(self.karfreitag)
-	series self.ostermontag = self.easter_sunday(-1)
+	series self.ostermontag = self.ostersonntag(-1)
 	self.ostermontag = misszero(self.ostermontag)
-	series self.christihimmelfahrt = self.easter_sunday(-39)
+	series self.christihimmelfahrt = self.ostersonntag(-39)
 	self.christihimmelfahrt = misszero(self.christihimmelfahrt)
-	series self.pfingstsonntag = self.easter_sunday(-49)
+	series self.pfingstsonntag = self.ostersonntag(-49)
 	self.pfingstsonntag = misszero(self.pfingstsonntag)
-	series self.pfingstmontag = self.easter_sunday(-50)
+	series self.pfingstmontag = self.ostersonntag(-50)
 	self.pfingstmontag = misszero(self.pfingstmontag)
-	series self.fronleichnam = self.easter_sunday(-60)
+	series self.fronleichnam = self.ostersonntag(-60)
 	self.fronleichnam = misszero(self.fronleichnam)
 end function
 
 
-function void get_easter_sunday (bundle *self)
+function series get_easter_sunday (const bundle self)
 	/* Retrieve series of Easter Sundays
 	return: type, description */
 
 	matrix years = values(self.year)
-	series self.easter_sunday = 0
+	series easter_sunday = 0
 
 	loop i=1..rows(years)
 		scalar e = easterday(years[i])
 		scalar m = floor(e)
 		scalar d = round(100*(e-m))
 
-		self.easter_sunday = (self.year == years[i] \
-			&& self.month == m && self.day == d) ? 1 : self.easter_sunday
+		easter_sunday = (self.year == years[i] \
+			&& self.month == m && self.day == d) ? 1 : easter_sunday
 	endloop
+    
+    return easter_sunday
 end function
 
 
@@ -203,5 +205,3 @@ function void get_date_series (bundle *self)
   	series self.month = m
   	series self.day = d
 end function
-
-
