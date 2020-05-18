@@ -29,8 +29,7 @@ Arguments:		country_name (string, e.g. 'de')
 Output:         bundle
 
 Return:
-Bundle comprising a binary time-series for each holiday. The binary series takes the
-value of one if the specific holiday occurs at a certain date, otherwise zero.
+Bundle comprising a binary time-series for each holiday. The binary series takes the value of one if the specific holiday occurs at a certain date, otherwise zero.
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
@@ -41,9 +40,7 @@ Arguments:      B (bundle returned by holidays() function)
 Output:         list
 
 Return:
-This convenience function appends all series of holidays in the bundle returned by the holidays() function to the active time-series data set.
-If one wants to retrieve only specific holidays, these can be
-defined by the optional string array 'hd'.
+This convenience function appends all series of holidays in the bundle returned by the holidays() function to the active time-series data set. If one wants to retrieve only specific holidays, these can be defined by the optional string array 'hd'.
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
@@ -52,8 +49,7 @@ Arguments:      B (bundle returned by holidays() function)
 Output:         string array
 
 Return:
-This convenience function returns a string array holding all
-names of holidays compiled after having called holidays() function.
+This convenience function returns a string array holding all names of holidays compiled after having called holidays() function.
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
@@ -62,8 +58,7 @@ Arguments:      B (bundle returned by holidays() function)
 Output:         none
 
 Return:
-This convenience function print the unique names of holidays compiled
-after having called holidays() function.
+This convenience function print the unique names of holidays compiled after having called holidays() function.
 -----------------------------------------------------------------------
 
 
