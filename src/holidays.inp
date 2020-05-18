@@ -1,207 +1,207 @@
 # https://de.wikipedia.org/wiki/Gesetzliche_Feiertage_in_Deutschland#Bewegliche_Feiertage
 
 function strings countries_supported (void)
-	/* List of countries supported. */
+    /* List of countries supported. */
 
-	strings countries = defarray("de")
+    strings countries = defarray("de")
 
-	return  countries
+    return  countries
 end function
 
 function void get_holidays (bundle *self)
-	/* Wrapper actually calling country-specific function. */
+    /* Wrapper actually calling country-specific function. */
 
-	if self.country == "de"
-		get_holidays_de(&self)
-	endif
+    if self.country == "de"
+        get_holidays_de(&self)
+    endif
 end function
 
 
 # Public
 function bundle holidays (string country)
-	/* Return list of binary series each refering to some holiday.
-	return: bundle, Includes all series defined for teh country of choice. */
+/* Return list of binary series each refering to some holiday.
+    return: bundle, Includes all series defined for teh country of choice. */
 
-	bundle self = null
-	errorif(($datatype != 2), "Data set must be of type 'time-series'.")
-	errorif(($pd != 7), "Periodicity of the time-series data set must be 7 days.")
-	string self.country = tolower(country)
-	errorif(!nelem(instrings(countries_supported(), self.country)),\
-			sprintf("Country '%s' not supported.", self.country))
+    bundle self = null
+    errorif(($datatype != 2), "Data set must be of type 'time-series'.")
+    errorif(($pd != 7), "Periodicity of the time-series data set must be 7 days.")
+    string self.country = tolower(country)
+    errorif(!nelem(instrings(countries_supported(), self.country)),\
+      sprintf("Country '%s' not supported.", self.country))
 
-	get_date_series(&self)
-	get_holidays(&self)
-	drop_bundle_items(&self)
+    get_date_series(&self)
+    get_holidays(&self)
+    drop_bundle_items(&self)
 
-	return self
+    return self
 end function
 
 function void drop_bundle_items (bundle *self)
-	/* Drop some items before returning to user. */
+    /* Drop some items before returning to user. */
 
-	delete self.month
-	delete self.year
-	delete self.day
+    delete self.month
+    delete self.year
+    delete self.day
 end function
 
 # Public
 function list get_list_of_holidays (const bundle self,
-								const series y "Arbitrary series needed",
-								const strings holiday_names[null] "Holidays to retrieve")
-	/* Convenience function returning list of holiday series from
-		bundle. Note: Series 'y' is needed such that series in L
-		get appended to data set. */
+                                    const series y "Arbitrary series needed",
+                                    const strings holiday_names[null] "Holidays to retrieve")
+    /* Convenience function returning list of holiday series from
+       bundle. Note: Series 'y' is needed such that series in L
+    get appended to data set. */
 
-	list L = null
-	if !exists(holiday_names)
-		strings holiday_names = get_names_of_holidays(self)
-	endif
+    list L = null
+    if !exists(holiday_names)
+        strings holiday_names = get_names_of_holidays(self)
+    endif
 
-	loop foreach i holiday_names
-		if holiday_names[i] != "country"
-			catch list L += genseries(holiday_names[i], self.$i)
-			if $error
-				printf "\nError: Requested holiday '%s' not part of bundle. \
-				Ignored.", holiday_names[i]
-			endif
-		endif
-	endloop
+    loop foreach i holiday_names
+        if holiday_names[i] != "country"
+            catch list L += genseries(holiday_names[i], self.$i)
+            if $error
+                printf "\nError: Requested holiday '%s' not part of bundle. \
+                  Ignored.", holiday_names[i]
+            endif
+        endif
+    endloop
 
-	return L
+    return L
 end function
 
 # Public
 function strings get_names_of_holidays (const bundle self)
-	/* Convenience function returning a string array of names of holidays
-		computed after having called the holiday() function. */
+/* Convenience function returning a string array of names of holidays
+    computed after having called the holiday() function. */
 
-	strings holiday_names = strdrop(getkeys(self), "country")
-	return holiday_names
+    strings holiday_names = strdrop(getkeys(self), "country")
+    return holiday_names
 end function
 
 # Public
 function void print_names_of_holidays (const bundle self)
-	/* Convenience function printing names of holidays
-		computed after having called the holiday() function. */
+/* Convenience function printing names of holidays
+    computed after having called the holiday() function. */
 
-	strings holiday_names = get_names_of_holidays(self)
-	printf "\nNames of holidays included in the bundle:\n"
-	loop foreach i holiday_names -q
-		printf "%s\n", holiday_names[i]
-	endloop
+    strings holiday_names = get_names_of_holidays(self)
+    printf "\nNames of holidays included in the bundle:\n"
+    loop foreach i holiday_names -q
+        printf "%s\n", holiday_names[i]
+    endloop
 end function
 
 
 function void get_holidays_de (bundle *self)
-	/* Legal holidays are those which apply to all Bundesländer. */
+    /* Legal holidays are those which apply to all Bundesländer. */
 
-	days_with_fixed_date_de(&self)
-	days_related_to_eastern_de(&self)
-	sundays_of_advent(&self)
+    days_with_fixed_date_de(&self)
+    days_related_to_eastern_de(&self)
+    sundays_of_advent(&self)
 end function
 
 
 function void sundays_of_advent (bundle *self)
-	/* Determine the date for each of the four Sundays, and return list
-		of Advent series. */
+/* Determine the date for each of the four Sundays, and return list
+    of Advent series. */
 
-	matrix years = values(self.year)
-	series self.advent_1 = 0
-	series self.advent_2 = 0
-	series self.advent_3 = 0
-	series self.advent_4 = 0
+    matrix years = values(self.year)
+    series self.advent_1 = 0
+    series self.advent_2 = 0
+    series self.advent_3 = 0
+    series self.advent_4 = 0
 
-	loop i=1..rows(years)
-		scalar shift_by_days = weekday(years[i], 12, 24)
-		if shift_by_days != 0			# not a Sunday
-    		scalar weekday_sunday_before_2412 = \
-    		weekday(years[i], 12, (24 - shift_by_days))
-    	endif
-    	scalar advent_4 = isodate(epochday(years[i], 12, 24) - shift_by_days)
-    	scalar advent_3 = isodate(epochday(advent_4) - 7)
-    	scalar advent_2 = isodate(epochday(advent_3) - 7)
-    	scalar advent_1 = isodate(epochday(advent_2) - 7)
+    loop i=1..rows(years)
+        scalar shift_by_days = weekday(years[i], 12, 24)
+        if shift_by_days != 0			# not a Sunday
+            scalar weekday_sunday_before_2412 = \
+              weekday(years[i], 12, (24 - shift_by_days))
+        endif
+        scalar advent_4 = isodate(epochday(years[i], 12, 24) - shift_by_days)
+        scalar advent_3 = isodate(epochday(advent_4) - 7)
+        scalar advent_2 = isodate(epochday(advent_3) - 7)
+        scalar advent_1 = isodate(epochday(advent_2) - 7)
 
-    	self.advent_4 = ($obsdate == advent_4) ? 1 : self.advent_4
-    	self.advent_3 = ($obsdate == advent_3) ? 1 : self.advent_3
-    	self.advent_2 = ($obsdate == advent_2) ? 1 : self.advent_2
-    	self.advent_1 = ($obsdate == advent_1) ? 1 : self.advent_1
-	endloop
+        self.advent_4 = ($obsdate == advent_4) ? 1 : self.advent_4
+        self.advent_3 = ($obsdate == advent_3) ? 1 : self.advent_3
+        self.advent_2 = ($obsdate == advent_2) ? 1 : self.advent_2
+        self.advent_1 = ($obsdate == advent_1) ? 1 : self.advent_1
+    endloop
 end function
 
 
 function void days_with_fixed_date_de (bundle *self)
-	/* German holidays with a fixed date each year. */
+    /* German holidays with a fixed date each year. */
 
-	series self.neujahr = (self.month == 1 && self.day == 1) ? 1 : 0
-	series self.erster_mai = (self.month == 5 && self.day == 1) ? 1 : 0
-	series self.weihnachtstag_1 = (self.month == 12 && self.day == 25) ? 1 : 0
-	series self.weihnachtstag_2 = (self.month == 12 && self.day == 26) ? 1 : 0
-	series self.silvester = (self.month == 12 && self.day == 31) ? 1 : 0
-	series self.tag_der_deutschen_einheit = (self.month == 10 \
-		&& self.day == 3) ? 1 : 0
-	series self.frauentag = (self.month == 3 && self.day == 8) ? 1 : 0
-	series self.kindertag = (self.month == 6 && self.day == 1) ? 1 : 0
-	series self.reformationstag = (self.month == 10 && self.day == 31) ? 1 : 0
-	series self.allerheiligen = (self.month == 11 && self.day == 1) ? 1 : 0
-	series self.nikolaus = (self.month == 12 && self.day == 6) ? 1 : 0
-	series self.valentinstag = (self.month == 2 && self.day == 14) ? 1 : 0
+    series self.neujahr = (self.month == 1 && self.day == 1) ? 1 : 0
+    series self.erster_mai = (self.month == 5 && self.day == 1) ? 1 : 0
+    series self.weihnachtstag_1 = (self.month == 12 && self.day == 25) ? 1 : 0
+    series self.weihnachtstag_2 = (self.month == 12 && self.day == 26) ? 1 : 0
+    series self.silvester = (self.month == 12 && self.day == 31) ? 1 : 0
+    series self.tag_der_deutschen_einheit = (self.month == 10 \
+      && self.day == 3) ? 1 : 0
+    series self.frauentag = (self.month == 3 && self.day == 8) ? 1 : 0
+    series self.kindertag = (self.month == 6 && self.day == 1) ? 1 : 0
+    series self.reformationstag = (self.month == 10 && self.day == 31) ? 1 : 0
+    series self.allerheiligen = (self.month == 11 && self.day == 1) ? 1 : 0
+    series self.nikolaus = (self.month == 12 && self.day == 6) ? 1 : 0
+    series self.valentinstag = (self.month == 2 && self.day == 14) ? 1 : 0
 end function
 
 
 function void days_related_to_eastern_de (bundle *self)
-	/* Days related to Easter Sunday in a fixed manner.*/
+    /* Days related to Easter Sunday in a fixed manner.*/
 
-	series self.ostersonntag = get_easter_sunday(self)
-	series self.weiberfastnacht = self.ostersonntag(+52)
-	self.weiberfastnacht = misszero(self.weiberfastnacht)
-	series self.rosenmontag = self.ostersonntag(+48)
-	self.rosenmontag = misszero(self.rosenmontag)
-	series self.aschermittwoch = self.ostersonntag(+46)
-	self.aschermittwoch = misszero(self.aschermittwoch)
-	series self.gruendonnerstag = self.ostersonntag(+3)
-	self.gruendonnerstag = misszero(self.gruendonnerstag)
-	series self.karfreitag = self.ostersonntag(+2)
-	self.karfreitag = misszero(self.karfreitag)
-	series self.ostermontag = self.ostersonntag(-1)
-	self.ostermontag = misszero(self.ostermontag)
-	series self.christihimmelfahrt = self.ostersonntag(-39)
-	self.christihimmelfahrt = misszero(self.christihimmelfahrt)
-	series self.pfingstsonntag = self.ostersonntag(-49)
-	self.pfingstsonntag = misszero(self.pfingstsonntag)
-	series self.pfingstmontag = self.ostersonntag(-50)
-	self.pfingstmontag = misszero(self.pfingstmontag)
-	series self.fronleichnam = self.ostersonntag(-60)
-	self.fronleichnam = misszero(self.fronleichnam)
+    series self.ostersonntag = get_easter_sunday(self)
+    series self.weiberfastnacht = self.ostersonntag(+52)
+    self.weiberfastnacht = misszero(self.weiberfastnacht)
+    series self.rosenmontag = self.ostersonntag(+48)
+    self.rosenmontag = misszero(self.rosenmontag)
+    series self.aschermittwoch = self.ostersonntag(+46)
+    self.aschermittwoch = misszero(self.aschermittwoch)
+    series self.gruendonnerstag = self.ostersonntag(+3)
+    self.gruendonnerstag = misszero(self.gruendonnerstag)
+    series self.karfreitag = self.ostersonntag(+2)
+    self.karfreitag = misszero(self.karfreitag)
+    series self.ostermontag = self.ostersonntag(-1)
+    self.ostermontag = misszero(self.ostermontag)
+    series self.christihimmelfahrt = self.ostersonntag(-39)
+    self.christihimmelfahrt = misszero(self.christihimmelfahrt)
+    series self.pfingstsonntag = self.ostersonntag(-49)
+    self.pfingstsonntag = misszero(self.pfingstsonntag)
+    series self.pfingstmontag = self.ostersonntag(-50)
+    self.pfingstmontag = misszero(self.pfingstmontag)
+    series self.fronleichnam = self.ostersonntag(-60)
+    self.fronleichnam = misszero(self.fronleichnam)
 end function
 
 
 function series get_easter_sunday (const bundle self)
-	/* Retrieve series of Easter Sundays
-	return: type, description */
+/* Retrieve series of Easter Sundays
+    return: type, description */
 
-	matrix years = values(self.year)
-	series easter_sunday = 0
+    matrix years = values(self.year)
+    series easter_sunday = 0
 
-	loop i=1..rows(years)
-		scalar e = easterday(years[i])
-		scalar m = floor(e)
-		scalar d = round(100*(e-m))
+    loop i=1..rows(years)
+        scalar e = easterday(years[i])
+        scalar m = floor(e)
+        scalar d = round(100*(e-m))
 
-		easter_sunday = (self.year == years[i] \
-			&& self.month == m && self.day == d) ? 1 : easter_sunday
-	endloop
-    
+        easter_sunday = (self.year == years[i] \
+          && self.month == m && self.day == d) ? 1 : easter_sunday
+    endloop
+
     return easter_sunday
 end function
 
 
 function void get_date_series (bundle *self)
-	/* Retrieve some date series. */
+    /* Retrieve some date series. */
 
-	series y, m, d
-  	isoconv($obsdate, &y, &m, &d)
-  	series self.year = y
-  	series self.month = m
-  	series self.day = d
+    series y, m, d
+    isoconv($obsdate, &y, &m, &d)
+    series self.year = y
+    series self.month = m
+    series self.day = d
 end function

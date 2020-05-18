@@ -93,7 +93,7 @@ bundle self = null
 errorif(($datatype != 2), &quot;Data set must be of type 'time-series'.&quot;)
 errorif(($pd != 7), &quot;Periodicity of the time-series data set must be 7 days.&quot;)
 string self.country = tolower(country)
-errorif(!nelem(instrings(countries_supported(), self.country)),    sprintf(&quot;Country '%s' not supported.&quot;, self.country))
+errorif(!nelem(instrings(countries_supported(), self.country)), sprintf(&quot;Country '%s' not supported.&quot;, self.country))
 get_date_series(&amp;self)
 get_holidays(&amp;self)
 drop_bundle_items(&amp;self)
@@ -121,7 +121,7 @@ loop foreach i holiday_names
   if holiday_names[i] != &quot;country&quot;
     catch list L += genseries(holiday_names[i], self.$i)
     if $error
-      printf &quot;\nError: Requested holiday '%s' not part of bundle.  				Ignored.&quot;, holiday_names[i]
+      printf &quot;\nError: Requested holiday '%s' not part of bundle.                    Ignored.&quot;, holiday_names[i]
     endif
   endif
 endloop
@@ -201,7 +201,7 @@ series self.advent_4 = 0
 loop i=1..rows(years)
   scalar shift_by_days = weekday(years[i], 12, 24)
   if shift_by_days != 0			# not a Sunday
-    scalar weekday_sunday_before_2412 =   weekday(years[i], 12, (24 - shift_by_days))
+    scalar weekday_sunday_before_2412 = weekday(years[i], 12, (24 - shift_by_days))
   endif
   scalar advent_4 = isodate(epochday(years[i], 12, 24) - shift_by_days)
   scalar advent_3 = isodate(epochday(advent_4) - 7)
@@ -224,7 +224,7 @@ series self.erster_mai = (self.month == 5 &amp;&amp; self.day == 1) ? 1 : 0
 series self.weihnachtstag_1 = (self.month == 12 &amp;&amp; self.day == 25) ? 1 : 0
 series self.weihnachtstag_2 = (self.month == 12 &amp;&amp; self.day == 26) ? 1 : 0
 series self.silvester = (self.month == 12 &amp;&amp; self.day == 31) ? 1 : 0
-series self.tag_der_deutschen_einheit = (self.month == 10   &amp;&amp; self.day == 3) ? 1 : 0
+series self.tag_der_deutschen_einheit = (self.month == 10 &amp;&amp; self.day == 3) ? 1 : 0
 series self.frauentag = (self.month == 3 &amp;&amp; self.day == 8) ? 1 : 0
 series self.kindertag = (self.month == 6 &amp;&amp; self.day == 1) ? 1 : 0
 series self.reformationstag = (self.month == 10 &amp;&amp; self.day == 31) ? 1 : 0
@@ -273,7 +273,7 @@ loop i=1..rows(years)
   scalar e = easterday(years[i])
   scalar m = floor(e)
   scalar d = round(100*(e-m))
-  easter_sunday = (self.year == years[i]    &amp;&amp; self.month == m &amp;&amp; self.day == d) ? 1 : easter_sunday
+  easter_sunday = (self.year == years[i] &amp;&amp; self.month == m &amp;&amp; self.day == d) ? 1 : easter_sunday
 endloop
 return easter_sunday
 </code>
