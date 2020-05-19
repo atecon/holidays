@@ -13,10 +13,7 @@ Please ask questions and report bugs on the gretl mailing list if possible. Alte
 Source code and test script(s) can be found here:
 https://github.com/atecon/holidays
 
-The package comprises four public functions. First, the user calls the holiday() function for obtaining a bundle of various binary series named according to a specific holiday.
-Second, the get_list_of_holidays() function is a convenience function, and appends the list of series from the previously returned bundle to the current data set. You may specify a string array for retrieving only specific holiday series.
-Third, the print_names_of_holidays() function simply prints all holidays in the compiled bundle.
-Fourth, the get_names_of_holidays() function returns a string array including the names of holidays compiled.
+The package comprises four public functions. First, the user calls the holiday() function for obtaining a bundle of various binary series named according to a specific holiday. Second, the get_list_of_holidays() function is a convenience function, and appends the list of series from the previously returned bundle to the current data set. You may specify a string array for retrieving only specific holiday series. Third, the print_names_of_holidays() function simply prints all holidays in the compiled bundle. Fourth, the get_names_of_holidays() function returns a string array including the names of holidays compiled.
 
 Note: The package only works if a time-series data set with periodicity 7 days is active. In case your active time-series data set has a 5 days periodicity, you may join the 7 days time-series to it.
 Also, if you actually want to make use of holidays series for a panel data set, you need to join these to your panel data set by means of gretl's &quot;join&quot; or &quot;append&quot; command.
@@ -26,36 +23,36 @@ PUBLIC FUNCTIONS:
 -----------------------------------------------------------------------
 Function:		holidays()
 Arguments:		country_name (string, e.g. 'de')
-Output:         bundle
+Output:			bundle
 
 Return:
 Bundle comprising a binary time-series for each holiday. The binary series takes the value of one if the specific holiday occurs at a certain date, otherwise zero.
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
-Function:       get_list_of_holidays()
-Arguments:      B (bundle returned by holidays() function)
+Function:		get_list_of_holidays()
+Arguments:		B (bundle returned by holidays() function)
 				S (some arbitrary series of the active data set)
 				hd (string array of holiday series to return, optional)
-Output:         list
+Output:			list
 
 Return:
 This convenience function appends all series of holidays in the bundle returned by the holidays() function to the active time-series data set. If one wants to retrieve only specific holidays, these can be defined by the optional string array 'hd'.
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
-Function:       get_names_of_holidays()
-Arguments:      B (bundle returned by holidays() function)
-Output:         string array
+Function:		get_names_of_holidays()
+Arguments:		B (bundle returned by holidays() function)
+Output:			string array
 
 Return:
 This convenience function returns a string array holding all names of holidays compiled after having called holidays() function.
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
-Function:       print_names_of_holidays()
-Arguments:      B (bundle returned by holidays() function)
-Output:         none
+Function:		print_names_of_holidays()
+Arguments:		B (bundle returned by holidays() function)
+Output:			none
 
 Return:
 This convenience function print the unique names of holidays compiled after having called holidays() function.
