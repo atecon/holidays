@@ -62,7 +62,7 @@ function list get_list_of_holidays (const bundle self,
             catch list L += genseries(holiday_names[i], self.$i)
             if $error
                 printf "\nError: Requested holiday '%s' not part of bundle. \
-                  Ignored.", holiday_names[i]
+                 Ignored.", holiday_names[i]
             endif
         endif
     endloop
