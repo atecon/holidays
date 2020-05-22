@@ -10,36 +10,102 @@ The package comprises four public functions. **First**, the user calls the *holi
 **Note**: The package only works if a time-series data set with periodicity 7 days is active. In case your active time-series data set has a 5 days periodicity, you may join the 7 days time-series to it.
 Also, if you actually want to make use of holidays series for a panel data set, you need to join these to your panel data set by means of gretl's "join" or "append" command.
 
-# Sample script
+# Commented sample script
+
+## Install the package from gretl's package server
+```
+pkg install holidays    # download from package server
+```
+
+## Retrieve list of holiday series for a country
 ```
 clear
 set verbose off
+
+include holidays.gfn    # load functions into memory
 
 # Define some daily time-series data set
 nulldata 800
 setobs 7 2018-01-01 --time-series
 
-pkg install holidays    # download from package server
-include holidays.gfn    # load functions into memory
-
 # Obtain holidays for Germany
 bundle HD = holidays("de")
 print HD
+```
 
-# Retrieve holidays as list of binary series
+The resulting bundle *HD* includes the following items (just showing the first four items):
+```
+bundle HD, created by holidays:
+  kindertag (series: length 800)
+  fronleichnam (series: length 800)
+  neujahr (series: length 800)
+  pfingstmontag (series: length 800)
+```
+
+## Retrieve holidays as list of binary series
+```
 list L = get_list_of_holidays(HD, index)
-summary L --simple
+summary L --simple			# descriptive statistics
 print L -o --range=1:10
+```
+The first 10 obervations of the retrieved series (shown only for some of all series):
+```
+           christihimmelfahrt    frauentag ostersonntag pfingstmontag      neujahr
 
-# Return names of holidays as string array
+2018-01-01                  0            0            0             0            1
+2018-01-02                  0            0            0             0            0
+2018-01-03                  0            0            0             0            0
+2018-01-04                  0            0            0             0            0
+2018-01-05                  0            0            0             0            0
+2018-01-06                  0            0            0             0            0
+2018-01-07                  0            0            0             0            0
+2018-01-08                  0            0            0             0            0
+2018-01-09                  0            0            0             0            0
+2018-01-10                  0            0            0             0            0
+
+           fronleichnam    kindertag
+
+2018-01-01            0            0
+2018-01-02            0            0
+2018-01-03            0            0
+2018-01-04            0            0
+2018-01-05            0            0
+2018-01-06            0            0
+2018-01-07            0            0
+2018-01-08            0            0
+2018-01-09            0            0
+2018-01-10            0            0
+```
+
+## Return names of holidays as string array
+```
 strings holiday_names = get_names_of_holidays(HD)
 eval holiday_names[1]
 eval holiday_names[6]
-
-# Print names of holidays in bundle HD
+```
+The returned names of the first and sitxh list members are:
+```
+nikolaus
+erster_mai
+```
+## Print names of holidays in bundle HD
+```
 print_names_of_holidays(HD)
 ```
+The resulting list of holidays are (only showing the initial eight entries):
+```
+Names of holidays included in the bundle:
+nikolaus
+ostermontag
+advent_4
+aschermittwoch
+valentinstag
+erster_mai
+silvester
+allerheiligen
+```
 
+-----------------------------
 
 # Public functions
 
