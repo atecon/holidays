@@ -1,4 +1,6 @@
 # holidays
+[![Build Status](https://travis-ci.org/atecon/assertion.svg?branch=master)](https://travis-ci.org/atecon/assertion)
+
 This package returns country specific holidays in an easy manner. Currently the package comprises holidays for *Germany* only. However, some events -- such as Christmas days -- are also valid for many other countries.
 
 Please ask questions and report bugs on the gretl mailing list if possible. Alternatively, open an issue ticket on my github repo.
