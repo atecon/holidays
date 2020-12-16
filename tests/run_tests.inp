@@ -198,9 +198,6 @@ test_sundays_of_advent()
 function void test_holidays (void)
     print "Start holidays()"
 
-  	catch bundle b = holidays("fr")
-  	eval $error
-
   	bundle b = holidays("de")
     assert_true(inbundle(b, "country"))
   	assert_true(inbundle(b, "pfingstsonntag"))
