@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gretl-functions>
-<gretl-function-package name="holidays" minver="2020b">
+<gretl-function-package name="holidays" minver="2020c">
 <author email="atecon@posteo.de">Artur Tarassow</author>
 <version>0.2</version>
 <date>2021-03-22</date>
@@ -76,7 +76,7 @@ I recommend you to fork the source code from the github repo (https://github.com
 Changelog:
 - v0.2, March 2021:
 	+ add support for panel dataset
-	+ minimum gretl version is 2020b instead of 2020a
+	+ minimum gretl version is 2020c instead of 2020a
 - v0.1, May 2020:
 	+ initial release
 </help>
