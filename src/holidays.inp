@@ -23,8 +23,15 @@ function bundle holidays (string country)
     return: bundle, Includes all series defined for teh country of choice. */
 
     bundle self = null
-    errorif(($datatype != 2), "Data set must be of type 'time-series'.")
-    errorif(($pd != 7), "Periodicity of the time-series data set must be 7 days.")
+    errorif(($datatype == 1), "Data set must be of type 'time-series' or 'panel'.")
+    if $datatype == 2
+        errorif(($pd != 7), "Periodicity of the time-series data set must be daily ($pd=7).")
+    elif $datatype == 3
+        catch check = $pd
+        errorif($error, "Run 'setobs 7 <INIT_DATE> --panel-time' before.")
+        printf "\nWarning: Make sure your data is of daily frequency (7 days)."
+    endif
+
     string self.country = tolower(country)
     errorif(!nelem(instrings(countries_supported(), self.country)),\
       sprintf("Country '%s' not supported.", self.country))
