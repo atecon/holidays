@@ -1,22 +1,33 @@
 clear
 set verbose off
 
-# Define some daily time-series data set
-nulldata 800
-setobs 7 2018-01-01 --time-series
-
 include holidays.gfn
 
+EXAMPLE = 1
+
+if EXAMPLE == 1
+    # Define some daily time-series data set
+    nulldata 800
+    setobs 7 2018-01-01 --time-series
+elif EXAMPLE == 2
+    # Define some panel data set
+    nulldata 1600
+    setobs 800 1:1 --stacked-time-series # T=800, N = 2
+    setobs 7 2018-01-01 --panel-time
+endif
+
+series obsdate = $obsdate
 
 # Obtain holidays for Germany
 bundle HD = holidays("de")
 print HD
 
 # Retrieve holidays as list of binary series
-list L = get_list_of_holidays(HD, index)
-L
+list L = get_list_of_holidays(HD, time)
 summary L --simple
-print L -o --range=1:10
+
+print obsdate kindertag silvester -o
+
 
 # Return names of holidays as string array
 strings holiday_names = get_names_of_holidays(HD)

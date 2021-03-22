@@ -26,7 +26,7 @@ function void check_datatype (void)
     elif $datatype == 3
         catch check = $pd
         errorif($error, "Run 'setobs 7 <INIT_DATE> --panel-time' before.")
-        printf "\nWarning: Make sure your data is of daily frequency (7 days)."
+        printf "\nWarning: Make sure your data is of daily frequency (7 days).\n"
     endif
 end function
 
@@ -68,6 +68,7 @@ function list get_list_of_holidays (const bundle self,
     get appended to data set. */
 
     list L = null
+
     if !exists(holiday_names)
         strings holiday_names = get_names_of_holidays(self)
     endif
@@ -90,8 +91,7 @@ function strings get_names_of_holidays (const bundle self)
 /* Convenience function returning a string array of names of holidays
     computed after having called the holiday() function. */
 
-    strings holiday_names = strdrop(getkeys(self), "country")
-    return holiday_names
+    return strdrop(getkeys(self), "country")
 end function
 
 
@@ -100,7 +100,7 @@ function void print_names_of_holidays (const bundle self)
     computed after having called the holiday() function. */
 
     strings holiday_names = get_names_of_holidays(self)
-    printf "\nNames of holidays included in the bundle:\n"
+    printf "\nInfo: Names of holidays included in the bundle:\n"
     loop foreach i holiday_names -q
         printf "%s\n", holiday_names[i]
     endloop
