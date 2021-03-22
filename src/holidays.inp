@@ -16,14 +16,11 @@ function void get_holidays (bundle *self)
     endif
 end function
 
+function void check_datatype (void)
+    /*  */
 
-# Public
-function bundle holidays (string country)
-/* Return list of binary series each refering to some holiday.
-    return: bundle, Includes all series defined for teh country of choice. */
+    errorif(($datatype < 2), "Data set must be of type 'time-series' or 'panel'.")
 
-    bundle self = null
-    errorif(($datatype == 1), "Data set must be of type 'time-series' or 'panel'.")
     if $datatype == 2
         errorif(($pd != 7), "Periodicity of the time-series data set must be daily ($pd=7).")
     elif $datatype == 3
@@ -31,6 +28,16 @@ function bundle holidays (string country)
         errorif($error, "Run 'setobs 7 <INIT_DATE> --panel-time' before.")
         printf "\nWarning: Make sure your data is of daily frequency (7 days)."
     endif
+end function
+
+
+function bundle holidays (string country)
+/* Return list of binary series each refering to some holiday.
+    return: bundle, Includes all series defined for teh country of choice. */
+
+    bundle self = null
+
+    check_datatype()
 
     string self.country = tolower(country)
     errorif(!nelem(instrings(countries_supported(), self.country)),\
@@ -43,6 +50,7 @@ function bundle holidays (string country)
     return self
 end function
 
+
 function void drop_bundle_items (bundle *self)
     /* Drop some items before returning to user. */
 
@@ -51,7 +59,7 @@ function void drop_bundle_items (bundle *self)
     delete self.day
 end function
 
-# Public
+
 function list get_list_of_holidays (const bundle self,
                                     const series y "Arbitrary series needed",
                                     const strings holiday_names[null] "Holidays to retrieve")
@@ -77,7 +85,7 @@ function list get_list_of_holidays (const bundle self,
     return L
 end function
 
-# Public
+
 function strings get_names_of_holidays (const bundle self)
 /* Convenience function returning a string array of names of holidays
     computed after having called the holiday() function. */
@@ -86,7 +94,7 @@ function strings get_names_of_holidays (const bundle self)
     return holiday_names
 end function
 
-# Public
+
 function void print_names_of_holidays (const bundle self)
 /* Convenience function printing names of holidays
     computed after having called the holiday() function. */
