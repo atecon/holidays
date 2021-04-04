@@ -23,7 +23,7 @@ bundle HD = holidays("de")
 print HD
 
 # Retrieve holidays as list of binary series
-list L = get_list_of_holidays(HD, time)
+list L = get_list_of_holidays(HD)
 summary L --simple
 
 print obsdate kindertag silvester -o

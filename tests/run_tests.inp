@@ -230,26 +230,25 @@ end function
 test_holidays()
 
 
-function void test_get_list_of_holidays (const series y)
+function void test_get_list_of_holidays (void)
   print "Start get_list_of_holidays()"
 
 	bundle b = holidays("de")
-	list L = get_list_of_holidays(b, y)
+	list L = get_list_of_holidays(b)
 	assert_true(nelem(L))
 end function
 series foo = normal()
-test_get_list_of_holidays(foo)
+test_get_list_of_holidays()
 
 
-function void test_get_list_of_holidays_some (const series y)
+function void test_get_list_of_holidays_some (void)
   print "Start get_list_of_holidays: only subset()"
 
   bundle b = holidays("de")
-  list L = get_list_of_holidays(b, y, defarray("advent_1", "kindertag"))
+  list L = get_list_of_holidays(b, defarray("advent_1", "kindertag"))
   assert_equal_num(nelem(L), 2)
 end function
-series foo = normal()
-test_get_list_of_holidays_some(foo)
+test_get_list_of_holidays_some()
 
 
 function void test_get_names_of_holidays (void)

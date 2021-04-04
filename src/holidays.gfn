@@ -2,8 +2,8 @@
 <gretl-functions>
 <gretl-function-package name="holidays" minver="2020c">
 <author email="atecon@posteo.de">Artur Tarassow</author>
-<version>0.2</version>
-<date>2021-03-22</date>
+<version>0.3</version>
+<date>2021-04-04</date>
 <description>Retrieve list of holiday series</description>
 <tags>C81</tags>
 <help>
@@ -31,7 +31,6 @@ Bundle comprising a binary time-series for each holiday. The binary series takes
 -----------------------------------------------------------------------
 Function:       get_list_of_holidays()
 Arguments:      B (bundle returned by holidays() function)
-                S (some arbitrary series of the active data set)
                 hd (string array of holiday series to return, optional)
 Output:         list
 
@@ -74,6 +73,8 @@ I recommend you to fork the source code from the github repo (https://github.com
 
 
 Changelog:
+- v0.3, April 2021:
+	+ remove unnecessary second argument from the get_list_of_holidays()
 - v0.2, March 2021:
 	+ add support for panel dataset
 	+ minimum gretl version is 2020c instead of 2020a
@@ -99,18 +100,13 @@ return self
 </code>
 </gretl-function>
 <gretl-function name="get_list_of_holidays" type="list">
- <params count="3">
+ <params count="2">
   <param name="self" type="bundle" const="true"/>
-  <param name="y" type="series" const="true">
-<description>Arbitrary series needed</description>
-  </param>
   <param name="holiday_names" type="strings" optional="true" const="true">
 <description>Holidays to retrieve</description>
   </param>
  </params>
-<code>/* Convenience function returning list of holiday series from
-bundle. Note: Series 'y' is needed such that series in L
-get appended to data set. */
+<code>/* Convenience function returning list of holiday series from bundle. */
 list L = null
 if !exists(holiday_names)
   strings holiday_names = get_names_of_holidays(self)
@@ -325,7 +321,7 @@ bundle HD = holidays(&quot;de&quot;)
 print HD
 
 # Retrieve holidays as list of binary series
-list L = get_list_of_holidays(HD, time)
+list L = get_list_of_holidays(HD)
 summary L --simple
 
 print obsdate kindertag silvester -o

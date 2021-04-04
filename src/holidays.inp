@@ -61,11 +61,8 @@ end function
 
 
 function list get_list_of_holidays (const bundle self,
-                                    const series y "Arbitrary series needed",
                                     const strings holiday_names[null] "Holidays to retrieve")
-    /* Convenience function returning list of holiday series from
-       bundle. Note: Series 'y' is needed such that series in L
-    get appended to data set. */
+    /* Convenience function returning list of holiday series from bundle. */
 
     list L = null
 

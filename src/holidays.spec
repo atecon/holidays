@@ -1,7 +1,7 @@
 author = Artur Tarassow
 email = atecon@posteo.de
-version = 0.2
-date = 2021-03-22
+version = 0.3
+date = 2021-04-04
 description = Retrieve list of holiday series
 tags = C81
 min-version = 2020c

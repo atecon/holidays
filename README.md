@@ -45,11 +45,11 @@ bundle HD, created by holidays:
 
 ## Retrieve holidays as list of binary series
 ```
-list L = get_list_of_holidays(HD, index)
+list L = get_list_of_holidays(HD)
 summary L --simple			# descriptive statistics
 print L -o --range=1:10
 ```
-The first 10 obervations of the retrieved series (shown only for some of all series):
+The first 10 observations of the retrieved series (shown only for some of all series):
 ```
            christihimmelfahrt    frauentag ostersonntag pfingstmontag      neujahr
 
@@ -84,7 +84,7 @@ strings holiday_names = get_names_of_holidays(HD)
 eval holiday_names[1]
 eval holiday_names[6]
 ```
-The returned names of the first and sitxh list members are:
+The returned names of the first and sixth list members are:
 ```
 nikolaus
 erster_mai
@@ -120,7 +120,6 @@ Bundle comprising a binary time-series for each holiday. The binary series takes
 -----------------------------------------------------------------------
 Function:       get_list_of_holidays()
 Arguments:      B (bundle returned by holidays() function)
-                S (some arbitrary series of the active data set)
                 hd (string array of holiday series to return, optional)
 Output:         list
 
@@ -158,6 +157,8 @@ I recommend you to fork the source code from the github repo (https://github.com
 
 
 ## Changelog:
+- v0.3, April 2021:
+  + remove unnecessary second argument from the get_list_of_holidays()
 - v0.2, March 2021:
 	+ add support for panel dataset
 	+ minimum gretl version is 2020c instead of 2020a
