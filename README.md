@@ -9,8 +9,7 @@ https://github.com/atecon/holidays
 
 The package comprises four public functions. **First**, the user calls the *holiday()* function for obtaining a bundle of various binary series named according to a specific holiday. **Second**, the *get_list_of_holidays()* function is a convenience function, and appends the list of series from the previously returned bundle to the current data set. You may specify a string array for retrieving only specific holiday series. **Third**, the *print_names_of_holidays()* function simply prints all holidays in the compiled bundle. **Fourth**, the *get_names_of_holidays()* function returns a string array including the names of holidays compiled.
 
-**Note**: The package only works if a time-series data set with periodicity 7 days is active. In case your active time-series data set has a 5 days periodicity, you may join the 7 days time-series to it.
-Also, if you actually want to make use of holidays series for a panel data set, you need to join these to your panel data set by means of gretl's "join" or "append" command.
+**Note**: The package only works if either a time-series or panel dataset with periodicity 7 days is active. In case your active dataset has a 5 days periodicity, you may join the 7 days time-series to it.
 
 # Commented sample script
 
@@ -159,5 +158,8 @@ I recommend you to fork the source code from the github repo (https://github.com
 
 
 ## Changelog:
+- v0.2, March 2021:
+	+ add support for panel dataset
+	+ minimum gretl version is 2020c instead of 2020a
 - v0.1, May 2020:
 	+ initial release
