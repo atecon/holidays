@@ -32,8 +32,8 @@ end function
 
 
 function bundle holidays (string country)
-/* Return list of binary series each refering to some holiday.
-    return: bundle, Includes all series defined for teh country of choice. */
+/* Return list of binary series each referring to some holiday.
+    return: bundle, Includes all series defined for the country of choice. */
 
     bundle self = null
 
