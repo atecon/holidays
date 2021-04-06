@@ -87,8 +87,8 @@ string_utils </depends>
  <params count="1">
   <param name="country" type="string"/>
  </params>
-<code>/* Return list of binary series each refering to some holiday.
-return: bundle, Includes all series defined for teh country of choice. */
+<code>/* Return list of binary series each referring to some holiday.
+return: bundle, Includes all series defined for the country of choice. */
 bundle self = null
 check_datatype()
 string self.country = tolower(country)
@@ -256,8 +256,8 @@ series self.karfreitag = self.ostersonntag(+2)
 self.karfreitag = misszero(self.karfreitag)
 series self.ostermontag = self.ostersonntag(-1)
 self.ostermontag = misszero(self.ostermontag)
-series self.christihimmelfahrt = self.ostersonntag(-39)
-self.christihimmelfahrt = misszero(self.christihimmelfahrt)
+series self.christi_himmelfahrt = self.ostersonntag(-39)
+self.christi_himmelfahrt = misszero(self.christi_himmelfahrt)
 series self.pfingstsonntag = self.ostersonntag(-49)
 self.pfingstsonntag = misszero(self.pfingstsonntag)
 series self.pfingstmontag = self.ostersonntag(-50)

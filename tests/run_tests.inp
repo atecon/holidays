@@ -63,7 +63,7 @@ function void test_days_related_to_eastern_de (void)
   	assert_true(inbundle(b, "gruendonnerstag"))
   	assert_true(inbundle(b, "karfreitag"))
   	assert_true(inbundle(b, "ostermontag"))
-  	assert_true(inbundle(b, "christihimmelfahrt"))
+  	assert_true(inbundle(b, "christi_himmelfahrt"))
   	assert_true(inbundle(b, "pfingstsonntag"))
   	assert_true(inbundle(b, "pfingstmontag"))
   	assert_true(inbundle(b, "fronleichnam"))
@@ -74,7 +74,7 @@ function void test_days_related_to_eastern_de (void)
   	series gruendonnerstag = b.gruendonnerstag
   	series karfreitag = b.karfreitag
   	series ostermontag = b.ostermontag
-  	series christihimmelfahrt = b.christihimmelfahrt
+  	series christi_himmelfahrt = b.christi_himmelfahrt
   	series pfingstsonntag = b.pfingstsonntag
   	series pfingstmontag = b.pfingstmontag
 
@@ -84,7 +84,7 @@ function void test_days_related_to_eastern_de (void)
   	assert_true(gruendonnerstag["2018-03-29"])
   	assert_true(karfreitag["2018-03-30"])
   	assert_true(ostermontag["2018-04-02"])
-  	assert_true(christihimmelfahrt["2018-05-10"])
+  	assert_true(christi_himmelfahrt["2018-05-10"])
   	assert_true(pfingstsonntag["2018-05-20"])
   	assert_true(pfingstmontag["2018-05-21"])
 
@@ -94,7 +94,7 @@ function void test_days_related_to_eastern_de (void)
   	assert_true(gruendonnerstag["2019-04-18"])
   	assert_true(karfreitag["2019-04-19"])
   	assert_true(ostermontag["2019-04-22"])
-  	assert_true(christihimmelfahrt["2019-05-30"])
+  	assert_true(christi_himmelfahrt["2019-05-30"])
   	assert_true(pfingstsonntag["2019-06-09"])
   	assert_true(pfingstmontag["2019-06-10"])
 end function
@@ -215,7 +215,7 @@ function void test_holidays (void)
   	assert_true(inbundle(b, "advent_2"))
   	assert_true(inbundle(b, "advent_3"))
   	assert_true(inbundle(b, "advent_4"))
-  	assert_true(inbundle(b, "christihimmelfahrt"))
+  	assert_true(inbundle(b, "christi_himmelfahrt"))
   	assert_true(inbundle(b, "silvester"))
     assert_true(inbundle(b, "neujahr"))
     assert_true(inbundle(b, "frauentag"))
